@@ -55,7 +55,7 @@ def hostname(url):
     failure.
     @rtype: C{str}
     """
-    netloc = urlparse.urlparse(url)[1]
+    netloc = urllib.parse.urlparse(url)[1]
     if netloc == '':
         return ''
 
