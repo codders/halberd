@@ -169,7 +169,7 @@ class HTTPClient:
         @raise ConnectionRefused: If it can't reach the target webserver.
         @raise TimedOut: If we cannot send the data within the specified time.
         """
-        scheme, netloc, url, params, query, fragment = urlparse.urlparse(urlstr)
+        scheme, netloc, url, params, query, fragment = urllib.parse.urlparse(urlstr)
 
         if scheme not in self.schemes:
             raise InvalidURL('%s is not a supported protocol' % scheme)

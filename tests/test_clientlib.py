@@ -48,7 +48,7 @@ class TestHTTPClient(unittest.TestCase):
     def testFillTemplate(self):
         def get_request(url):
             scheme, netloc, url, params, query, fragment = \
-                urlparse.urlparse(url)
+                urllib.parse.urlparse(url)
             hostname, port = self.client._getHostAndPort(netloc)
             return self.client._fillTemplate(hostname, port, url,
                                              params, query, fragment)
