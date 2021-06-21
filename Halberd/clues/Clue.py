@@ -129,7 +129,7 @@ class Clue:
         """Updates header fingerprint.
         """
         assert self.__tmphdrs is not None
-        fingerprint = hashlib.sha1(self.__tmphdrs)
+        fingerprint = hashlib.sha1(self.__tmphdrs.encode('utf-8'))
         self.__tmphdrs = None
         self.info['digest'] = fingerprint.hexdigest()
 
