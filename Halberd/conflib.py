@@ -115,7 +115,7 @@ class ConfReader:
             for name, value in self.confparser.items(section):
                 sec.setdefault(name, value)
 
-        if self in proxy:
+        if self.__dict.get('proxy'):
             proxy_serv_addr = self._getAddr('proxy', default_proxy_port)
 
         keyfile = self.__dict['ssl'].get('keyfile', None)
