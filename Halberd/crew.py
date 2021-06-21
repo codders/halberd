@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: iso-8859-1 -*-
 
 """\
@@ -82,7 +83,6 @@ import Halberd.logger
 import Halberd.clues.Clue
 import Halberd.clientlib as clientlib
 
-
 __all__ = ['WorkCrew']
 
 
@@ -94,6 +94,7 @@ class ScanState:
 
     caught with an exception).
     """
+
     def __init__(self):
         """Initializes shared state among scanning threads.
         """
@@ -119,7 +120,7 @@ class ScanState:
         missed = self.__missed
         self.__mutex.release()
 
-        return (nclues, replies, missed)
+        return nclues, replies, missed
 
     def insertClue(self, clue):
         """Inserts a clue in the list if it is new.
@@ -191,6 +192,7 @@ class WorkCrew:
 
     @ivar prev: Previous SIGINT handler.
     """
+
     def __init__(self, scantask):
         self.workers = []
         self.task = scantask
@@ -200,16 +202,17 @@ class WorkCrew:
         self.working = False
 
         self.prev = None
-        
+
     def _setupSigHandler(self):
         """Performs what's needed to catch SIGINT.
         """
+
         def interrupt(signum, frame):
             """SIGINT handler
             """
             self.state.setError('received SIGINT')
 
-        self.prev = signal.signal(signal.SIGINT, interrupt) 
+        self.prev = signal.signal(signal.SIGINT, interrupt)
 
     def _restoreSigHandler(self):
         """Restore previous SIGINT handler.
@@ -219,7 +222,7 @@ class WorkCrew:
     def _initLocal(self):
         """Initializes conventional (local) scanner threads.
         """
-        for i in xrange(self.task.parallelism):
+        for i in range(self.task.parallelism):
             worker = Scanner(self.state, self.task)
             self.workers.append(worker)
 
@@ -270,6 +273,7 @@ class BaseScanner(threading.Thread):
     stopped.
     @type timeout: C{float}
     """
+
     def __init__(self, state, scantask):
         """Initializes the scanning thread.
 
@@ -306,7 +310,7 @@ class BaseScanner(threading.Thread):
         @return: True if the timeout has expired, False otherwise.
         @rtype: C{bool}
         """
-        return (self.remaining() <= 0)
+        return self.remaining() <= 0
 
     def setTimeout(self, secs):
         """Compute an expiration time.
@@ -334,9 +338,11 @@ class BaseScanner(threading.Thread):
         """
         pass
 
+
 class Scanner(BaseScanner):
     """Scans the target host from the local machine.
     """
+
     def process(self):
         """Gathers clues connecting directly to the target web server.
         """
@@ -350,9 +356,9 @@ class Scanner(BaseScanner):
 
         try:
             ts, hdrs = client.getHeaders(self.task.addr, self.task.url)
-        except fatal_exceptions, msg:
+        except fatal_exceptions as msg:
             self.state.setError(msg)
-        except clientlib.TimedOut, msg:
+        except clientlib.TimedOut as msg:
             self.state.incMissed()
         else:
             self.state.insertClue(self.makeClue(ts, hdrs))
@@ -409,8 +415,8 @@ class Manager(BaseScanner):
         def statbar(elapsed, total):
             """Compose a status bar string showing progress.
             """
-            done = int(math.floor(float(total - elapsed)/total * 10))
-            notdone = int(math.ceil(float(elapsed)/total * 10))
+            done = int(math.floor(float(total - elapsed) / total * 10))
+            notdone = int(math.ceil(float(elapsed) / total * 10))
             return '[' + '#' * done + ' ' * notdone + ']'
 
         nclues, replies, missed = self.state.getStats()
@@ -422,11 +428,10 @@ class Manager(BaseScanner):
             remaining = self.remaining()
 
         statusline = '\r' + self.task.addr.ljust(15) + \
-                    '  %s  clues: %3d | replies: %3d | missed: %3d' \
-                    % (statbar(remaining, self.task.scantime),
-                       nclues, replies, missed)
+                     '  %s  clues: %3d | replies: %3d | missed: %3d' \
+                     % (statbar(remaining, self.task.scantime),
+                        nclues, replies, missed)
         sys.stdout.write(statusline)
         sys.stdout.flush()
-
 
 # vim: ts=4 sw=4 et

@@ -94,8 +94,8 @@ def load(filename):
 
         # This may be risky from a security standpoint.
         clue.headers = eval(headers, {}, {})
-        if not (isinstance(clue.headers, list) or
-                isinstance(clue.headers, tuple)):
+        if not (isinstance(clue.headers, types.ListType) or
+                isinstance(clue.headers, types.TupleType)):
             raise InvalidFile('Wrong clue header field')
         clue.parse(clue.headers)
 

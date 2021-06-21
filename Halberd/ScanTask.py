@@ -1,3 +1,4 @@
+#!usr/bin/python3
 # -*- coding: iso-8859-1 -*-
 
 """Scanning tasks.
@@ -44,7 +45,6 @@ import os
 
 import Halberd.conflib
 
-
 default_scantime = 15
 
 default_parallelism = 4
@@ -61,6 +61,7 @@ default_out = None
 class ConfError(Exception):
     """Error with configuration file(s)
     """
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -109,6 +110,7 @@ class ScanTask:
     @ivar analyzed: Sequence of clues after the analysis phase.
     @type analyzed: C{list}
     """
+
     def __init__(self):
         self.scantime = default_scantime
         self.parallelism = default_parallelism
@@ -134,7 +136,6 @@ class ScanTask:
         self.clues = []
         self.analyzed = []
 
-
     def readConf(self):
         """Read configuration file.
 
@@ -158,17 +159,16 @@ class ScanTask:
                     reader.writeDefault(default_conf_file)
                     reader.open(default_conf_file)
                 except (OSError, IOError):
-                    raise ConfError, 'unable to create a default conf. file'
+                    raise ConfError('unable to create a default conf. file')
             else:
-                raise ConfError, 'unable to open configuration file %s\n'
+                raise ConfError('unable to open configuration file %s\n')
         except conflib.InvalidConfFile:
-            raise ConfError, 'invalid configuration file %s\n' % self.conf_file
+            raise ConfError('invalid configuration file %s\n' % self.conf_file)
 
         confvals = reader.parse()
         self.proxy_serv_addr = confvals[0]
         self.keyfile, self.certfile = confvals[1:]
 
         reader.close()
-
 
 # vim: ts=4 sw=4 et

@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: iso-8859-1 -*-
 
 """Configuration file management module.
@@ -30,8 +31,7 @@ This module takes care of reading and writing configuration files.
 
 
 import os
-import ConfigParser
-
+import configparser
 
 default_proxy_port = 8080
 
@@ -65,7 +65,7 @@ class ConfReader:
         self.__dict = {}
         self.__conf = None
 
-        self.confparser = ConfigParser.SafeConfigParser()
+        self.confparser = configparser.SafeConfigParser()
 
     def open(self, fname):
         """Opens the configuration file.
@@ -75,18 +75,17 @@ class ConfReader:
 
         @raise InvalidConfFile: In case the passed file is not a valid one.
         """
-        self.__conf = open(os.path.expanduser(fname), 'r')
+        # self.__conf = open(os.path.expanduser(fname), 'r')
         try:
             self.confparser.readfp(self.__conf, fname)
-        except ConfigParser.MissingSectionHeaderError, msg:
-            raise InvalidConfFile, msg
+        except ConfigParser.MissingSectionHeaderError as msg:
+            raise InvalidConfFile(msg)
 
     def close(self):
         """Release the configuration file's descriptor.
         """
         if self.__conf:
             self.__conf.close()
-
 
     def _getAddr(self, sectname, default_port):
         """Read a network address from the given section.
@@ -98,7 +97,7 @@ class ConfReader:
         except ValueError:
             port = default_port
 
-        return (addr, port)
+        return addr, port
 
     def parse(self):
         """Parses the configuration file.
@@ -116,7 +115,7 @@ class ConfReader:
             for name, value in self.confparser.items(section):
                 sec.setdefault(name, value)
 
-        if self.__dict.has_key('proxy'):
+        if self in proxy:
             proxy_serv_addr = self._getAddr('proxy', default_proxy_port)
 
         keyfile = self.__dict['ssl'].get('keyfile', None)
@@ -135,15 +134,13 @@ class ConfReader:
         @param conf_file: Target file where the default conf. will be written.
         @type conf_file: C{str}
         """
-        assert conf_file and isinstance(conf_file, basestring)
+        assert conf_file and isinstance(conf_file, str)
 
         conf_fp = open(conf_file, 'w')
         conf_fp.write(default_conf)
         conf_fp.close()
 
-
     def __del__(self):
         self.close()
-
 
 # vim: ts=4 sw=4 et

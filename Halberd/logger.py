@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # -*- coding: iso-8859-1 -*-
 
 """Logger singleton.
@@ -25,10 +27,9 @@ This module allows halberd to easily log certain events.
 import sys
 import logging
 
-
 _logger = None
 
-#_logfmt = '%(name)s %(thread)d %(asctime)s %(levelname)s %(message)s'
+# logfmt = '%(name)s %(thread)d %(asctime)s %(levelname)s %(message)s'
 _logfmt = '%(levelname)s %(message)s'
 
 
@@ -49,17 +50,18 @@ def getLogger():
 
     return _logger
 
+
 def setDebug():
     """Set the logging level to C{debug}.
     """
     logger = getLogger()
     logger.setLevel(logging.DEBUG)
 
+
 def setError():
     """Set the logging level to C{error}.
     """
     logger = getLogger()
     logger.setLevel(logging.ERROR)
-
 
 # vim: ts=4 sw=4 et

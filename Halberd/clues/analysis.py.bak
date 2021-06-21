@@ -276,7 +276,7 @@ def sections(classified, sects=None):
         sects = []
 
     if isinstance(classified, dict):
-        for key in list(classified.keys()):
+        for key in classified.keys():
             sections(classified[key], sects)
     elif isinstance(classified, list):
         sects.append(classified)
@@ -437,7 +437,7 @@ def analyze(clues):
 
     cluesbydigest = classify(clues, get_digest)
 
-    for key in list(cluesbydigest.keys()):
+    for key in cluesbydigest.keys():
         for cluster in clusters(cluesbydigest[key]):
             results.append(merge(cluster))
 

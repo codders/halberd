@@ -1,3 +1,4 @@
+#!usr/bin/python3
 # -*- coding: iso-8859-1 -*-
 
 """Miscellaneous functions.
@@ -25,8 +26,7 @@
 
 import time
 import socket
-import urlparse
-
+import urllib.parse
 
 table = '________________________________________________0123456789_______ABCDEFGHIJKLMNOPQRSTUVWXYZ______abcdefghijklmnopqrstuvwxyz_____________________________________________________________________________________________________________________________________'
 
@@ -35,7 +35,7 @@ def _gen_table():
     """Generate translation table.
     """
     tab = ''
-    for c in map(chr, xrange(256)):
+    for c in map(chr, list(range(256))):
         tab += (c.isalnum() and c) or '_'
 
     return tab
@@ -61,6 +61,7 @@ def hostname(url):
 
     return netloc.split(':', 1)[0]
 
+
 def addresses(host):
     """Get the network addresses to which a given host resolves to.
 
@@ -81,7 +82,6 @@ def addresses(host):
 
 
 if __name__ == '__main__':
-    print "table = '%s'" % _gen_table()
-
+    print(("table = '%s'" % _gen_table()))
 
 # vim: ts=4 sw=4 et

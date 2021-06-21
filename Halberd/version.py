@@ -1,7 +1,7 @@
-##
-##  version.py -- Version Information for halberd (syntax: Python)
-##  [automatically generated and maintained by GNU shtool]
-##
+#
+#  version.py -- Version Information for halberd (syntax: Python)
+#  [automatically generated and maintained by GNU shtool]
+#
 
 class version:
     v_hex       = 0x002204

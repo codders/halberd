@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: iso-8859-1 -*-
 
 """Output module.
@@ -21,6 +22,7 @@
 
 
 import sys
+import pprint
 
 import Halberd.logger
 import Halberd.clues.analysis as analysis
@@ -46,7 +48,7 @@ def report(scantask):
     out.write('%s' % scantask.url)
     if scantask.addr:
         out.write(' (%s)' % scantask.addr)
-    out.write(': %d real server(s)\n'  % len(clues))
+    out.write(': %d real server(s)\n' % len(clues))
     out.write('=' * 70 + '\n')
 
     for num, clue in enumerate(clues):
@@ -54,7 +56,7 @@ def report(scantask):
         info = clue.info
 
         out.write('\n')
-#        out.write('-' * 70 + '\n')
+        #        out.write('-' * 70 + '\n')
         out.write('server %d: %s\n' % (num + 1, info['server'].lstrip()))
         out.write('-' * 70 + '\n\n')
 
@@ -74,7 +76,7 @@ def report(scantask):
         out.write('header fingerprint: %s\n' % info['digest'])
 
         different = [(field, value) for field, value in clue.headers \
-                                    if field in diff_fields]
+                     if field in diff_fields]
         if different:
             out.write('different headers:\n')
             idx = 1
@@ -83,9 +85,7 @@ def report(scantask):
                 idx += 1
 
         if scantask.debug:
-            import pprint
             out.write('headers:\n')
             pprint.pprint(clue.headers, out)
-
 
 # vim: ts=4 sw=4 et

@@ -1,3 +1,5 @@
+#!usr/bin/python3
+
 # -*- coding: iso-8859-1 -*-
 
 """Provides scanning patterns to be used as building blocks for more complex
@@ -34,6 +36,7 @@ import Halberd.clues.analysis as analysis
 class ScanError(Exception):
     """Generic error during scanning.
     """
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -47,6 +50,7 @@ class BaseStrategy:
     A strategy is a certain way to use the program. Theses can be layered to
     build a bigger strategy doing more complex things, etc.
     """
+
     def __init__(self, scantask):
         self.task = scantask
         self.logger = Halberd.logger.getLogger()
@@ -78,16 +82,18 @@ class BaseStrategy:
 
         self.task.analyzed = analysis.analyze(self.task.clues)
         self.task.analyzed = analysis.reanalyze(self.task.clues,
-                                self.task.analyzed, self.task.ratio_threshold)
+                                                self.task.analyzed, self.task.ratio_threshold)
+
 
 class UniScanStrategy(BaseStrategy):
     """Scan a single URL.
     """
+
     def __init__(self, scantask):
         BaseStrategy.__init__(self, scantask)
 
         if not self.task.url:
-            raise ScanError, 'Didn\'t provide an URL to scan'
+            raise ScanError('Didn\'t provide an URL to scan')
 
         if self.task.addr:
             # The user passed a specific address as a parameter.
@@ -99,17 +105,17 @@ class UniScanStrategy(BaseStrategy):
             try:
                 self.addrs = Halberd.util.addresses(host)
             except KeyboardInterrupt:
-                raise ScanError, 'interrupted by the user'
+                raise ScanError('interrupted by the user')
 
             if not self.addrs:
-                raise ScanError, 'unable to resolve %s' % host
+                raise ScanError('unable to resolve %s' % host)
 
             self.addrs.sort()
             self.logger.info('host lookup done.')
 
             if len(self.addrs) > 1:
                 for addr in self.addrs:
-                    #self.logger.debug('%s resolves to %s', host, addr)
+                    # self.logger.debug('%s resolves to %s', host, addr)
                     self.logger.info('%s resolves to %s', host, addr)
 
     def execute(self):
@@ -129,14 +135,16 @@ class UniScanStrategy(BaseStrategy):
                              self.task.addr,
                              self.task.clues)
 
+
 class MultiScanStrategy(BaseStrategy):
     """Scan multiple URLs.
     """
+
     def __init__(self, scantask):
         BaseStrategy.__init__(self, scantask)
 
         if not self.task.urlfile:
-            raise ScanError, 'An urlfile parameter must be provided'
+            raise ScanError('An urlfile parameter must be provided')
 
         self.urlfp = open(self.task.urlfile, 'r')
 
@@ -164,11 +172,11 @@ class MultiScanStrategy(BaseStrategy):
             try:
                 addrs = Halberd.util.addresses(host)
             except KeyboardInterrupt:
-                raise ScanError, 'interrupted by the user'
+                raise ScanError('interrupted by the user')
             self.logger.info('host lookup done.')
 
             for addr in addrs:
-                yield (url, addr)
+                yield url, addr
 
     def execute(self):
         """Launch a multiple URL scan.
@@ -187,11 +195,13 @@ class MultiScanStrategy(BaseStrategy):
 
             Halberd.reportlib.report(self.task)
 
+
 class ClueReaderStrategy(BaseStrategy):
     """Clue reader strategy.
 
     Works by reading and analyzing files of previously stored clues.
     """
+
     def __init__(self, scantask):
         BaseStrategy.__init__(self, scantask)
 
@@ -202,6 +212,5 @@ class ClueReaderStrategy(BaseStrategy):
         self._analyze()
         self.task.url = self.task.cluefile
         Halberd.reportlib.report(self.task)
-    
 
 # vim: ts=4 sw=4 et
