@@ -201,7 +201,7 @@ class Clue:
     def _get_date(self, field):
         """Date:"""
         self.info['date'] = field
-        self._remote = time.mktime(rfc822.parsedate(field))
+        self._remote = time.mktime(email.parsedate(field))
 
     def _get_content_location(self, field):
         """Content-location:"""

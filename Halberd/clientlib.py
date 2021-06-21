@@ -254,7 +254,7 @@ class HTTPClient:
         """Sends a string to the socket.
         """
         try:
-            self._sock.sendall(data)
+            self._sock.sendall(data.encode('utf-8'))
         except socket.timeout:
             raise TimedOut('timed out while writing to the network')
 
@@ -284,7 +284,7 @@ class HTTPClient:
             if not timestamp:
                 timestamp = time.time()
 
-            data += chunk
+            data += chunk.decode('utf-8')
             idx = data.find('\r\n\r\n')
             if idx != -1:
                 data = data[:idx]
