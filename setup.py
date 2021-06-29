@@ -98,7 +98,7 @@ Topic :: Security
 """
 
 setup(
-    name = 'halberd', version = version.v_short,
+    name = 'halberd', version = '0.2.5p3',
     description = 'HTTP load balancer detector',
     long_description = long_description,
     author = 'Juan M. Bello Rivas',
