@@ -29,7 +29,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
+import ssl
 import time
 import socket
 import urllib.parse
@@ -175,6 +175,8 @@ class HTTPClient:
             raise InvalidURL('%s is not a supported protocol' % scheme)
 
         hostname, port = self._getHostAndPort(netloc)
+        # required for hostname verification
+        self.hostname = hostname
         # NOTE: address and hostname may not be the same. The caller is
         # responsible for checking that.
 
@@ -182,7 +184,7 @@ class HTTPClient:
 
         self._connect((address, port))
 
-        self._sendAll(req)
+        self._sendAll(req.encode())
 
     def _getHostAndPort(self, netloc):
         """Determine the hostname and port to connect to from an URL
@@ -313,7 +315,7 @@ class HTTPSClient(HTTPClient):
 
         self._recv = None
         self._sslsock = None
-        self._timeout_exceptions.append(socket.sslerror)
+        self._timeout_exceptions.append(socket.error)
 
         # Path to an SSL key file and certificate.
         self.keyfile = None
@@ -329,9 +331,18 @@ class HTTPSClient(HTTPClient):
         negotiation.
         """
         HTTPClient._connect(self, addr)
+
         try:
-            self._sslsock = socket.ssl(self._sock, self.keyfile, self.certfile)
-        except socket.sslerror as msg:
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            context.verify_mode = ssl.CERT_REQUIRED
+            context.check_hostname = True
+            if self.certfile or self.keyfile:
+                context.load_verify_locations(capath = self.certfile,  cafile = self.keyfile)
+            else:
+                context.load_default_certs()
+
+            self._sslsock = context.wrap_socket(self._sock, server_hostname = self.hostname)
+        except socket.error as msg:
             raise HTTPSError(msg)
 
         self._recv = self._sslsock.read
