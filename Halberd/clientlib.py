@@ -184,7 +184,7 @@ class HTTPClient:
 
         self._connect((address, port))
 
-        self._sendAll(req.encode())
+        self._sendAll(req)
 
     def _getHostAndPort(self, netloc):
         """Determine the hostname and port to connect to from an URL
@@ -255,8 +255,10 @@ class HTTPClient:
     def _sendAll(self, data):
         """Sends a string to the socket.
         """
+        if isinstance(data, str):
+            data = data.encode('UTF-8')
         try:
-            self._sock.sendall(data.encode('utf-8'))
+            self._sock.sendall(data)
         except socket.timeout:
             raise TimedOut('timed out while writing to the network')
 
@@ -350,6 +352,8 @@ class HTTPSClient(HTTPClient):
     def _sendAll(self, data):
         """Sends a string to the socket.
         """
+        if isinstance(data, str):
+            data = data.encode('UTF-8')
         # xxx - currently we don't make sure everything is sent.
         self._sslsock.write(data)
 
